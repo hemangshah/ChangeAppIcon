@@ -8,7 +8,7 @@
 
 import UIKit
 
-private enum cityName {
+private enum cityName:String {
     case london
     case mumbai
     case newyork
@@ -20,10 +20,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var segmentCurrentCity: UISegmentedControl!
     @IBOutlet weak var imgViewCityIcon: UIImageView!
     
+    var arraySegmentValues = Array<String>()
+    
     //MARK: View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        getAllTitles()
         setCurrentSelection()
     }
 
@@ -51,6 +54,12 @@ class ViewController: UIViewController {
     }
     
     //MARK: Helpers
+    private func getAllTitles() -> Void {
+        for index in 0..<segmentCurrentCity.numberOfSegments {
+            arraySegmentValues.append(segmentCurrentCity.titleForSegment(at: index)!)
+        }
+    }
+    
     private func setCurrentSelection() -> Void {
         let currentAppIconName = UIApplication.shared.alternateIconName ?? ""
         segmentCurrentCity.selectedSegmentIndex = getSegmentIndexFromPlistIconKey(iconName: currentAppIconName)
@@ -92,43 +101,25 @@ class ViewController: UIViewController {
     
     //This method is use to get app icon for UIImageView.
     private func iconNameForSelection(city:cityName) -> String {
-        switch city {
-        case .mumbai:
-            return "ic_mumbai.png"
-        case .newyork:
-            return "ic_newyork.png"
-        case .sydney:
-            return "ic_sydney.png"
-        default:
-            return "ic_london.png"
-        }
+        return "ic_".appending(city.rawValue)
     }
     
     //This method is used to get plist's app icon name.
     private func plistIconKeyForSelection(city:cityName) -> String {
-        switch city {
-        case .mumbai:
-            return "city_mumbai"
-        case .newyork:
-            return "city_newyork"
-        case .sydney:
-            return "city_sydney"
-        default:
-            return ""
-        }
+        return "city_".appending(city.rawValue)
     }
     
     //This function is used to get the segment index for the particular app icon key in plist.
     private func getSegmentIndexFromPlistIconKey(iconName:String) -> Int {
-        switch iconName {
-        case "city_mumbai":
-            return 1
-        case "city_newyork":
-            return 2
-        case "city_sydney":
-            return 3
-        default:
+        let onlyCity = iconName.components(separatedBy: "_").last!
+        guard !onlyCity.isEmpty else {
             return 0
         }
+        
+        let upperCaseCity = onlyCity.capitalized
+        guard arraySegmentValues.contains(upperCaseCity) else {
+            return 0
+        }
+        return arraySegmentValues.index(of: upperCaseCity)!
     }
 }
