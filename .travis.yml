@@ -1,13 +1,9 @@
+osx_image: xcode8.0
 language: objective-c
 
-branches:
- only:
- - master
-
 xcode_project: ChangeAppIcon.xcodeproj
-xcode_scheme: ChangeAppIcon
-osx_image: beta-xcode8.3
-xcode_sdk: iphonesimulator10.3
 
-script:
-- xcodebuild clean build test -project ChangeAppIcon.xcodeproj -scheme ChangeAppIcon
+# whitelist
+branches:
+only:
+- master
